@@ -1,0 +1,19 @@
+{
+  "name": "RSK Bot",
+  "description": "Telegram bot for attendance tracking",
+  "repository": "https://github.com/yourusername/your-repo",
+  "keywords": ["python", "telegram", "bot"],
+  "env": {
+    "BOT_TOKEN": {
+      "description": "Telegram Bot Token",
+      "required": true
+    },
+    "GROUP_CHAT_ID": {
+      "description": "Telegram Group Chat ID",
+      "required": true
+    }
+  },
+  "addons": [
+    "heroku-postgresql:mini"
+  ]
+} 

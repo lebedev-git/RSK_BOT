@@ -1,7 +1,7 @@
 import json
 import aiohttp
 
-API_KEY = "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"
+API_KEY = "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"  # Убедитесь, что токен актуален
 MODEL = "deepseek/deepseek-r1"
 
 # Системный промпт для настройки поведения бота
@@ -14,10 +14,8 @@ async def get_ai_response(message: str) -> str:
     try:
         url = "https://openrouter.ai/api/v1/chat/completions"
         headers = {
-            "Authorization": f"Bearer {API_KEY}",
-            "Content-Type": "application/json",
-            "HTTP-Referer": "https://github.com/your-username",  # Для OpenRouter статистики
-            "X-Title": "RSK Bot"  # Название вашего бота
+            'Authorization': f'Bearer {API_KEY}',
+            'Content-Type': 'application/json',
         }
         
         data = {
@@ -27,9 +25,9 @@ async def get_ai_response(message: str) -> str:
                 {"role": "user", "content": message}
             ],
             "stream": False,
-            "temperature": 0.5,  # Снизили для более четких ответов
-            "max_tokens": 1000,  # Уменьшили для скорости
-            "top_p": 0.7,  # Снизили для более предсказуемых ответов
+            "temperature": 0.7,
+            "max_tokens": 2000,
+            "top_p": 0.9,
             "frequency_penalty": 0.3,
             "presence_penalty": 0.3
         }
@@ -41,12 +39,10 @@ async def get_ai_response(message: str) -> str:
                     content = result['choices'][0]['message']['content']
                     return process_content(content)
                 elif response.status == 401:
-                    print("Ошибка авторизации в OpenRouter API. Проверьте токен.")
-                    return "Извините, у меня проблемы с доступом к AI. Попробуйте позже."
+                    print(f"Ошибка авторизации: {await response.text()}")
+                    return "Извините, у меня проблемы с доступом. Попробуйте позже."
                 else:
                     print(f"Ошибка API: {response.status}")
-                    error_text = await response.text()
-                    print(error_text)
                     return "Произошла ошибка при обработке запроса. Попробуйте позже."
                     
     except Exception as e:

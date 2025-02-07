@@ -5,4 +5,6 @@ environs
 pytz
 aiohttp
 apscheduler
-psycopg2-binary 
+psycopg2-binary
+aiosqlite
+requests 

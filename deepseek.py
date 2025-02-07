@@ -1,64 +1,50 @@
 import requests
 import json
 
-API_KEY = "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" # внутри скобок свой апи ключ отсюда https://openrouter.ai/settings/keys
-MODEL = "deepseek/deepseek-r1"
+API_KEY = "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"
 
-def process_content(content):
-    return content.replace('<think>', '').replace('</think>', '')
-
-def chat_stream(prompt):
-    headers = {
-        "Authorization": f"Bearer {API_KEY}",
-        "Content-Type": "application/json"
-    }
-    
-    data = {
-        "model": MODEL,
-        "messages": [{"role": "user", "content": prompt}],
-        "stream": True
-    }
-
-    with requests.post(
-        "https://openrouter.ai/api/v1/chat/completions",
-        headers=headers,
-        json=data,
-        stream=True
-    ) as response:
-        if response.status_code != 200:
-            print("Ошибка API:", response.status_code)
-            return ""
-
-        full_response = []
+def get_ai_response(message: str) -> str:
+    try:
+        response = requests.post(
+            url="https://openrouter.ai/api/v1/chat/completions",
+            headers={
+                "Authorization": f"Bearer {API_KEY}",
+                "Content-Type": "application/json",
+                "HTTP-Referer": "https://github.com/lebedev-git/RSK_BOT",
+                "X-Title": "RSK Bot"
+            },
+            json={
+                "model": "deepseek/deepseek-r1",
+                "messages": [
+                    {
+                        "role": "user",
+                        "content": message
+                    }
+                ],
+                "temperature": 0.7,
+                "max_tokens": 2000
+            }
+        )
         
-        for chunk in response.iter_lines():
-            if chunk:
-                chunk_str = chunk.decode('utf-8').replace('data: ', '')
-                try:
-                    chunk_json = json.loads(chunk_str)
-                    if "choices" in chunk_json:
-                        content = chunk_json["choices"][0]["delta"].get("content", "")
-                        if content:
-                            cleaned = process_content(content)
-                            print(cleaned, end='', flush=True)
-                            full_response.append(cleaned)
-                except:
-                    pass
+        print(f"Response status: {response.status_code}")
+        print(f"Response text: {response.text}")
+        
+        if response.status_code == 200:
+            result = response.json()
+            return result['choices'][0]['message']['content']
+        else:
+            print(f"Error: {response.status_code}")
+            return "Извините, произошла ошибка."
+            
+    except Exception as e:
+        print(f"Error: {e}")
+        return "Извините, произошла ошибка."
 
-        print()  # Перенос строки после завершения потока
-        return ''.join(full_response)
-def main():
-    print("Чат с DeepSeek-R1 (by Antric)\nДля выхода введите 'exit'\n")
-
+# Пример использования
+if __name__ == "__main__":
     while True:
         user_input = input("Вы: ")
-        
         if user_input.lower() == 'exit':
-            print("Завершение работы...")
             break
-            
-        print("DeepSeek-R1:", end=' ', flush=True)
-        chat_stream(user_input)
-
-if __name__ == "__main__":
-    main()
+        response = get_ai_response(user_input)
+        print(f"AI: {response}")

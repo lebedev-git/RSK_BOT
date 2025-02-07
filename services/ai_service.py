@@ -1,7 +1,13 @@
 import json
 import aiohttp
+import os
+from environs import Env
 
-API_KEY = "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"
+env = Env()
+env.read_env()
+
+# Получаем API ключ из переменных окружения
+API_KEY = env.str("OPENROUTER_API_KEY", "")
 MODEL = "deepseek/deepseek-r1"
 
 # Системный промпт для настройки поведения бота
@@ -17,8 +23,7 @@ async def get_ai_response(message: str) -> str:
             'Authorization': f'Bearer {API_KEY}',
             'Content-Type': 'application/json',
             'HTTP-Referer': 'https://github.com/lebedev-git',
-            'X-Title': 'RSK Bot',
-            'OpenAI-Organization': 'lebedev-git'
+            'X-Title': 'RSK Bot'
         }
         
         data = {
@@ -31,12 +36,14 @@ async def get_ai_response(message: str) -> str:
 
         async with aiohttp.ClientSession() as session:
             async with session.post(url, headers=headers, json=data) as response:
+                print(f"Response status: {response.status}")
+                response_text = await response.text()
+                print(f"Response body: {response_text}")
+                
                 if response.status == 200:
-                    result = await response.json()
+                    result = json.loads(response_text)
                     return result['choices'][0]['message']['content']
                 else:
-                    error_text = await response.text()
-                    print(f"Error {response.status}: {error_text}")
                     return "Извините, произошла ошибка при обработке запроса."
                     
     except Exception as e:

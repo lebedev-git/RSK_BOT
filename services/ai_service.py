@@ -18,15 +18,21 @@ async def get_ai_response(message: str) -> str:
         url = "https://openrouter.ai/api/v1/chat/completions"
         
         headers = {
+            "HTTP-Referer": "https://openrouter.ai/docs",
+            "X-Title": "RSK Bot",
             "Authorization": f"Bearer {API_KEY}",
             "Content-Type": "application/json",
-            "HTTP-Referer": "https://openrouter.ai/docs",
-            "X-Title": "RSK Bot"
+            "OpenAI-Organization": "org-123"
         }
         
         data = {
             "model": MODEL,
-            "messages": [{"role": "user", "content": message}]
+            "messages": [{"role": "user", "content": message}],
+            "temperature": 0.7,
+            "max_tokens": 2000,
+            "top_p": 0.9,
+            "frequency_penalty": 0.0,
+            "presence_penalty": 0.0
         }
 
         print(f"Using API key: {API_KEY}")
@@ -42,6 +48,9 @@ async def get_ai_response(message: str) -> str:
                 if response.status == 200:
                     result = json.loads(response_text)
                     return result['choices'][0]['message']['content']
+                elif response.status == 401:
+                    print("Auth error. Please check API key and headers.")
+                    return "Извините, проблема с авторизацией."
                 else:
                     print(f"Error: {response.status}")
                     return "Извините, произошла ошибка."

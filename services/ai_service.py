@@ -20,21 +20,18 @@ async def get_ai_response(message: str) -> str:
         headers = {
             "Authorization": f"Bearer {API_KEY}",
             "Content-Type": "application/json",
-            "HTTP-Referer": "https://github.com/lebedev-git/RSK_BOT",
+            "HTTP-Referer": "https://openrouter.ai/docs",
             "X-Title": "RSK Bot"
         }
         
         data = {
             "model": MODEL,
-            "messages": [
-                {
-                    "role": "user",
-                    "content": message
-                }
-            ],
-            "temperature": 0.7,
-            "max_tokens": 2000
+            "messages": [{"role": "user", "content": message}]
         }
+
+        print(f"Using API key: {API_KEY}")
+        print(f"Request headers: {json.dumps(headers, indent=2)}")
+        print(f"Request data: {json.dumps(data, indent=2)}")
 
         async with aiohttp.ClientSession() as session:
             async with session.post(url, headers=headers, json=data) as response:

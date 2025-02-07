@@ -3,7 +3,7 @@ import aiohttp
 from config import load_config
 
 config = load_config()
-API_KEY = config.OPENROUTER_API_KEY
+API_KEY = "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"
 MODEL = "deepseek/deepseek-r1"
 
 # Системный промпт для настройки поведения бота

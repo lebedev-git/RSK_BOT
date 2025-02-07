@@ -1,7 +1,7 @@
 import json
 import aiohttp
 
-API_KEY = "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"  # Убедитесь, что токен актуален
+API_KEY = "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"
 MODEL = "deepseek/deepseek-r1"
 
 # Системный промпт для настройки поведения бота
@@ -16,35 +16,29 @@ async def get_ai_response(message: str) -> str:
         headers = {
             'Authorization': f'Bearer {API_KEY}',
             'Content-Type': 'application/json',
+            'HTTP-Referer': 'https://github.com/lebedev-git',
+            'X-Title': 'RSK Bot',
+            'OpenAI-Organization': 'lebedev-git'
         }
         
         data = {
             "model": MODEL,
             "messages": [
-                {"role": "system", "content": SYSTEM_PROMPT},
+                {"role": "system", "content": "Вы - помощник для Telegram бота."},
                 {"role": "user", "content": message}
-            ],
-            "stream": False,
-            "temperature": 0.7,
-            "max_tokens": 2000,
-            "top_p": 0.9,
-            "frequency_penalty": 0.3,
-            "presence_penalty": 0.3
+            ]
         }
 
         async with aiohttp.ClientSession() as session:
             async with session.post(url, headers=headers, json=data) as response:
                 if response.status == 200:
                     result = await response.json()
-                    content = result['choices'][0]['message']['content']
-                    return process_content(content)
-                elif response.status == 401:
-                    print(f"Ошибка авторизации: {await response.text()}")
-                    return "Извините, у меня проблемы с доступом. Попробуйте позже."
+                    return result['choices'][0]['message']['content']
                 else:
-                    print(f"Ошибка API: {response.status}")
-                    return "Произошла ошибка при обработке запроса. Попробуйте позже."
+                    error_text = await response.text()
+                    print(f"Error {response.status}: {error_text}")
+                    return "Извините, произошла ошибка при обработке запроса."
                     
     except Exception as e:
-        print(f"Ошибка при получении ответа от AI: {e}")
-        return "Извините, произошла ошибка при обработке запроса. Попробуйте позже." 
+        print(f"Error: {e}")
+        return "Извините, произошла ошибка при обработке запроса." 

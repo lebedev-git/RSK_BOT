@@ -1,5 +1,6 @@
 import json
 import aiohttp
+import os
 from config import load_config
 
 config = load_config()
@@ -15,22 +16,27 @@ def process_content(content: str) -> str:
 async def get_ai_response(message: str) -> str:
     try:
         url = "https://openrouter.ai/api/v1/chat/completions"
+        
+        # Минимальный набор заголовков
         headers = {
-            'Authorization': f'Bearer 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',
-            'Content-Type': 'application/json',
-            'HTTP-Referer': 'https://openrouter.ai/',
-            'X-Title': 'RSK Bot'
+            "Authorization": f"Bearer {API_KEY}",
+            "Content-Type": "application/json"
         }
         
+        # Минимальный набор данных
         data = {
             "model": MODEL,
             "messages": [
-                {"role": "system", "content": "Вы - помощник для Telegram бота."},
-                {"role": "user", "content": message}
-            ],
-            "temperature": 0.7,
-            "max_tokens": 1000
+                {
+                    "role": "user",
+                    "content": message
+                }
+            ]
         }
+
+        print("Sending request with:")
+        print(f"Headers: {headers}")
+        print(f"Data: {data}")
 
         async with aiohttp.ClientSession() as session:
             async with session.post(url, headers=headers, json=data) as response:
@@ -42,8 +48,8 @@ async def get_ai_response(message: str) -> str:
                     result = json.loads(response_text)
                     return result['choices'][0]['message']['content']
                 else:
-                    return "Извините, произошла ошибка при обработке запроса."
+                    return f"Ошибка {response.status}: {response_text}"
                     
     except Exception as e:
         print(f"Error: {e}")
-        return "Извините, произошла ошибка при обработке запроса." 
+        return f"Ошибка: {str(e)}" 

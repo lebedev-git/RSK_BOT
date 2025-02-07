@@ -1,13 +1,9 @@
 import json
 import aiohttp
-import os
-from environs import Env
+from config import load_config
 
-env = Env()
-env.read_env()
-
-# Получаем API ключ из переменных окружения
-API_KEY = env.str("OPENROUTER_API_KEY", "")
+config = load_config()
+API_KEY = config.OPENROUTER_API_KEY
 MODEL = "deepseek/deepseek-r1"
 
 # Системный промпт для настройки поведения бота

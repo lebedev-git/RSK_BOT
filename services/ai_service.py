@@ -4,7 +4,7 @@ from config import load_config
 
 config = load_config()
 
-API_KEY = "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"
+API_KEY = "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"  # Новый ключ
 MODEL = "deepseek/deepseek-r1"
 
 # Системный промпт для настройки поведения бота

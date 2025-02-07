@@ -18,8 +18,9 @@ async def get_ai_response(message: str) -> str:
         headers = {
             'Authorization': f'Bearer {API_KEY}',
             'Content-Type': 'application/json',
-            'HTTP-Referer': 'https://github.com/lebedev-git',
-            'X-Title': 'RSK Bot'
+            'HTTP-Referer': 'https://github.com/lebedev-git/RSK_BOT',
+            'X-Title': 'RSK Bot',
+            'OpenAI-Organization': 'lebedev-git'
         }
         
         data = {
@@ -27,7 +28,9 @@ async def get_ai_response(message: str) -> str:
             "messages": [
                 {"role": "system", "content": "Вы - помощник для Telegram бота."},
                 {"role": "user", "content": message}
-            ]
+            ],
+            "temperature": 0.7,
+            "max_tokens": 1000
         }
 
         async with aiohttp.ClientSession() as session:

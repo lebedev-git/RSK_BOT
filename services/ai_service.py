@@ -18,20 +18,19 @@ async def get_ai_response(message: str) -> str:
         url = "https://openrouter.ai/api/v1/chat/completions"
         
         headers = {
-            "Authorization": f"Bearer {API_KEY.strip()}",
+            "Authorization": "Bearer " + API_KEY.strip(),
             "Content-Type": "application/json",
-            "HTTP-Referer": "https://openrouter.ai",
+            "HTTP-Referer": "https://openrouter.ai/docs",
             "X-Title": "RSK Bot"
         }
         
         data = {
-            "model": "openai/gpt-3.5-turbo",
-            "messages": [{"role": "user", "content": message}],
-            "max_tokens": 1000
+            "model": "gpt-3.5-turbo",
+            "messages": [{"role": "user", "content": message}]
         }
 
         print(f"Using API key: {API_KEY[:10]}...")
-        print(f"Full headers: {headers}")
+        print(f"Full headers: {json.dumps(headers)}")
 
         async with aiohttp.ClientSession() as session:
             async with session.post(url, headers=headers, json=data) as response:

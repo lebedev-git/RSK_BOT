@@ -41,7 +41,7 @@ class Config:
         return cls(
             BOT_TOKEN=env.str("BOT_TOKEN"),
             GROUP_CHAT_ID=env.int("GROUP_CHAT_ID"),
-            DATABASE_URL=database_url,
+            DATABASE_URL=env.str("DATABASE_URL", database_url),
             OPENROUTER_API_KEY=env.str("OPENROUTER_API_KEY")
         )
 

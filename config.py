@@ -7,6 +7,7 @@ class Config:
     BOT_TOKEN: str
     GROUP_CHAT_ID: int
     DATABASE_URL: str
+    OPENROUTER_API_KEY: str
     MORNING_REPORT_TIME: str = "06:30"
     EVENING_REPORT_TIME: str = "18:00"
 
@@ -27,7 +28,8 @@ class Config:
                 return cls(
                     BOT_TOKEN=env.str("BOT_TOKEN"),
                     GROUP_CHAT_ID=env.int("GROUP_CHAT_ID"),
-                    DATABASE_URL="sqlite+aiosqlite:///bot_database.db"
+                    DATABASE_URL="sqlite+aiosqlite:///bot_database.db",
+                    OPENROUTER_API_KEY=env.str("OPENROUTER_API_KEY")
                 )
             
             # Если все переменные есть, используем PostgreSQL
@@ -39,7 +41,8 @@ class Config:
         return cls(
             BOT_TOKEN=env.str("BOT_TOKEN"),
             GROUP_CHAT_ID=env.int("GROUP_CHAT_ID"),
-            DATABASE_URL=database_url
+            DATABASE_URL=database_url,
+            OPENROUTER_API_KEY=env.str("OPENROUTER_API_KEY")
         )
 
 def load_config() -> Config:

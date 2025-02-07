@@ -17,25 +17,28 @@ async def get_ai_response(message: str) -> str:
     try:
         url = "https://openrouter.ai/api/v1/chat/completions"
         
+        # Максимально простые заголовки
         headers = {
             "Authorization": "Bearer " + API_KEY.strip(),
-            "Content-Type": "application/json",
-            "HTTP-Referer": "https://openrouter.ai/docs",
-            "X-Title": "RSK Bot"
+            "Content-Type": "application/json"
         }
         
+        # Простой запрос
         data = {
             "model": "gpt-3.5-turbo",
             "messages": [{"role": "user", "content": message}]
         }
 
-        print(f"Using API key: {API_KEY[:10]}...")
-        print(f"Full headers: {json.dumps(headers)}")
+        print(f"API Key: {API_KEY}")  # Выведем полный ключ для проверки
+        print(f"Request URL: {url}")
+        print(f"Headers: {json.dumps(headers, indent=2)}")
+        print(f"Data: {json.dumps(data, indent=2)}")
 
         async with aiohttp.ClientSession() as session:
             async with session.post(url, headers=headers, json=data) as response:
                 response_text = await response.text()
-                print(f"Full response: {response_text}")
+                print(f"Response Status: {response.status}")
+                print(f"Response Body: {response_text}")
                 
                 if response.status == 200:
                     result = json.loads(response_text)
@@ -47,5 +50,5 @@ async def get_ai_response(message: str) -> str:
                     return f"Ошибка {response.status}: {response_text}"
                     
     except Exception as e:
-        print(f"Detailed error: {str(e)}")
-        return f"Произошла ошибка: {str(e)}" 
+        print(f"Error: {str(e)}")
+        return f"Ошибка: {str(e)}" 

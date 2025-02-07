@@ -4,8 +4,8 @@ import os
 from config import load_config
 
 config = load_config()
-API_KEY = "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"
-MODEL = "deepseek/deepseek-r1"
+API_KEY = "sk-or-v1-ef3aa247e6afa5fea11bd121865a24006d031bceb0f2d88ce78b9e52e"
+MODEL = "openai/gpt-3.5-turbo"
 
 # Системный промпт для настройки поведения бота
 SYSTEM_PROMPT = """👋 Привет! Я твой помощник. Чем могу помочь сегодня?😊"""
@@ -17,13 +17,13 @@ async def get_ai_response(message: str) -> str:
     try:
         url = "https://openrouter.ai/api/v1/chat/completions"
         
-        # Минимальный набор заголовков
         headers = {
             "Authorization": f"Bearer {API_KEY}",
-            "Content-Type": "application/json"
+            "Content-Type": "application/json",
+            "HTTP-Referer": "https://openrouter.ai/docs",
+            "X-Title": "RSK Bot"
         }
         
-        # Минимальный набор данных
         data = {
             "model": MODEL,
             "messages": [
@@ -31,7 +31,8 @@ async def get_ai_response(message: str) -> str:
                     "role": "user",
                     "content": message
                 }
-            ]
+            ],
+            "route": "fallback"
         }
 
         print("Sending request with:")

@@ -16,11 +16,10 @@ async def get_ai_response(message: str) -> str:
     try:
         url = "https://openrouter.ai/api/v1/chat/completions"
         headers = {
-            'Authorization': f'Bearer {API_KEY}',
+            'Authorization': f'Bearer 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',
             'Content-Type': 'application/json',
-            'HTTP-Referer': 'https://github.com/lebedev-git/RSK_BOT',
-            'X-Title': 'RSK Bot',
-            'OpenAI-Organization': 'lebedev-git'
+            'HTTP-Referer': 'https://openrouter.ai/',
+            'X-Title': 'RSK Bot'
         }
         
         data = {

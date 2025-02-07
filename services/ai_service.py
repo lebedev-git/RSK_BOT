@@ -20,12 +20,14 @@ async def get_ai_response(message: str) -> str:
         headers = {
             "Authorization": f"Bearer {API_KEY.strip()}",
             "Content-Type": "application/json",
-            "HTTP-Referer": "https://openrouter.ai/",
+            "HTTP-Referer": "https://openrouter.ai",
+            "X-Title": "RSK Bot"
         }
         
         data = {
             "model": "openai/gpt-3.5-turbo",
-            "messages": [{"role": "user", "content": message}]
+            "messages": [{"role": "user", "content": message}],
+            "max_tokens": 1000
         }
 
         print(f"Using API key: {API_KEY[:10]}...")
